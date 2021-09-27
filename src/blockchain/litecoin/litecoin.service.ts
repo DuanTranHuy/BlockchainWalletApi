@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import {Decimal} from 'decimal.js';
 import {
     generateLtcWallet,
     generatePrivateKeyFromMnemonic,
     Currency,
     generateAddressFromXPub,
     ltcGetTxForAccount,
-    sendBitcoinTransaction,
     FromAddress,
     To,
-    FromUTXO,
     LtcTx,
     ltcGetBalance,
     sendLitecoinTransaction,
@@ -28,53 +27,29 @@ export class LitecoinService {
         return await ltcGetTxForAccount(address, 5, 0)
     }
 
-    async getBalance(address: string, testnet: boolean = true): Promise<{
-        incoming: string;
-        outgoing: string;
-    }> {
-        return await ltcGetBalance(address)
+    async getBalance(address: string, testnet: boolean = true): Promise<string> {
+        let balance =  await ltcGetBalance(address)
+        const incoming = new Decimal(balance.incoming)
+        const outgoing = new Decimal(balance.outgoing)
+        return incoming.minus(outgoing).toString();
     }
 
-    async sendCoin(transaction: TxDto, testnet: boolean = true) {
-        const { senders, receivers } = transaction
-        var fromAddress = await Promise.all(senders.map(async (sender) => {
-            const wallet = await generateLtcWallet(testnet, sender.mnemonic);
-            return {
-                address: generateAddressFromXPub(Currency.LTC, testnet, wallet.xpub, sender.index),
-                privateKey: await generatePrivateKeyFromMnemonic(Currency.LTC, testnet, wallet.xpub, sender.index)
-            } as FromAddress;
-        }))
-        var to = receivers.map(receiver => {
-            return {
-                address: receiver.address,
-                value: receiver.value
-            } as To
-        })
-        return await sendLitecoinTransaction(testnet, {
+    async sendCoin(transaction: TxDto, testnet: boolean = true): Promise<string> {
+        const { sender, receiver } = transaction
+        const wallet = await generateLtcWallet(testnet, sender.mnemonic);
+        var fromAddress = [{
+            address: generateAddressFromXPub(Currency.LTC, testnet, wallet.xpub, sender.index),
+            privateKey: await generatePrivateKeyFromMnemonic(Currency.LTC, testnet, wallet.xpub, sender.index)
+        } as FromAddress];
+        var to = [{
+            address: receiver.address,
+            value: receiver.value
+        } as To]
+        const transactionHash = await sendLitecoinTransaction(testnet, {
             fromAddress,
             to
         });
-    }
-
-    async sendCoinFromUTXOS(fromUTXOS: any[], receivers: any[], testnet: boolean = true) {
-        var fromUTXO = await Promise.all(fromUTXOS.map(async (fromUTXO) => {
-            const wallet = await generateLtcWallet(testnet, fromUTXO.mnemonic);
-            return {
-                txHash: fromUTXO.txid,
-                index: fromUTXO.index,
-                privateKey: await generatePrivateKeyFromMnemonic(Currency.LTC, testnet, wallet.xpub, fromUTXO.index)
-            } as FromUTXO;
-        }))
-        var to = receivers.map(receiver => {
-            return {
-                address: receiver.address,
-                value: receiver.value
-            } as To
-        })
-        return await sendBitcoinTransaction(testnet, {
-            fromUTXO,
-            to
-        });
+        return transactionHash.txId
     }
 
     async broadcast(signedTx: string, testnet: boolean = true): Promise<string> {

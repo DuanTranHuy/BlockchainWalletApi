@@ -9,28 +9,28 @@ export class BitcoinController {
   constructor(
     private readonly bitcoinService: BitcoinService,
   ) { }
-  @Get('address/:mnemonic/:index/:testnet')
+  @Get('/:testnet/address/:mnemonic/:index')
   async getAddress(@Param('mnemonic') mnemonic: string, @Param('index') index: number, @Param('testnet') testnet: boolean): Promise<string> {
     return await this.bitcoinService.getAddress(mnemonic, index, testnet);
   }
 
-  @Get('/:address/balance/:testnet')
-  async getBalance(@Param('address') address: string, @Param('testnet') testnet: boolean): Promise<any> {
+  @Get('/:testnet/:address/balance')
+  async getBalance(@Param('address') address: string, @Param('testnet') testnet: boolean): Promise<string> {
     return await this.bitcoinService.getBalance(address, testnet);
   }
 
-  @Get('/:address/transactions/:testnet')
+  @Get('/:testnet/:address/transactions')
   async getTransactionsByAddress(@Param('address') address: string, @Param('testnet') testnet: boolean): Promise<any> {
     return await this.bitcoinService.getTransactionsByAddress(address, testnet);
   }
 
-  @Post('/:signedTx/:testnet')
-  async boradcast(@Param('signedTx') signedTx: string, @Param('testnet') testnet: boolean): Promise<any> {
+  @Post('/:testnet/broadcast/:signedTx')
+  async boradcast(@Param('signedTx') signedTx: string, @Param('testnet') testnet: boolean): Promise<string> {
     return await this.bitcoinService.broadcast(signedTx, testnet);
   }
 
-  @Post('transaction/:testnet')
-  async sendBitcoin(@Body() transaction: TxDto, @Param('testnet') testnet: boolean): Promise<any> {
+  @Post('/:testnet/transaction')
+  async sendBitcoin(@Body() transaction: TxDto, @Param('testnet') testnet: boolean): Promise<string> {
     return await this.bitcoinService.sendCoin(transaction, testnet);
   }
 }
