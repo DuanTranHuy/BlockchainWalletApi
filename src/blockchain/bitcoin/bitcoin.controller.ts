@@ -4,7 +4,7 @@ import { TxDto } from '../dto/tx.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('bitcoin')
-@ApiTags('bitcoin')
+@ApiTags('Bitcoin')
 export class BitcoinController {
   constructor(
     private readonly bitcoinService: BitcoinService,
@@ -30,7 +30,7 @@ export class BitcoinController {
   }
 
   @Post('/:testnet/transaction')
-  async sendBitcoin(@Body() transaction: TxDto, @Param('testnet') testnet: boolean): Promise<string> {
+  async send(@Body() transaction: TxDto, @Param('testnet') testnet: boolean): Promise<string> {
     return await this.bitcoinService.sendCoin(transaction, testnet);
   }
 }

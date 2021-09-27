@@ -4,7 +4,7 @@ import { TxDto } from '../dto/tx.dto';
 import { LitecoinService } from './litecoin.service';
 
 @Controller('litecoin')
-@ApiTags('litecoin')
+@ApiTags('Litecoin')
 export class LitecoinController {
   logger: Logger;
   constructor(private readonly litecoinService: LitecoinService,
@@ -35,7 +35,7 @@ export class LitecoinController {
   }
 
   @Post('/:testnet/transaction')
-  async sendBitcoin(@Body() transaction: TxDto, @Param('testnet') testnet: boolean): Promise<any> {
+  async send(@Body() transaction: TxDto, @Param('testnet') testnet: boolean): Promise<any> {
     return await this.litecoinService.sendCoin(transaction, testnet);
   }
 }

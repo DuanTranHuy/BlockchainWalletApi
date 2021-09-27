@@ -4,7 +4,7 @@ import { TransferXrp } from '@tatumio/tatum';
 import { RippleService } from './ripple.service';
 
 @Controller('ripple')
-@ApiTags('ripple')
+@ApiTags('Ripple')
 export class RippleController {
   constructor(private readonly rippleService: RippleService) {}
   @Get('/:testnet/address/:mnemonic/:index')
@@ -28,7 +28,7 @@ export class RippleController {
   }
 
   @Post('/:testnet/transaction')
-  async sendBitcoin(@Body() transaction: TransferXrp, @Param('testnet') testnet: boolean): Promise<any> {
+  async send(@Body() transaction: TransferXrp, @Param('testnet') testnet: boolean): Promise<any> {
     return await this.rippleService.sendCoin(transaction, testnet);
   }
 }
