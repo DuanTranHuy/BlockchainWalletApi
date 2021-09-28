@@ -39,8 +39,8 @@ export class BitcoinService {
         const { sender, receiver } = transaction
         const wallet = await generateBtcWallet(testnet, sender.mnemonic);
         var fromAddress = [{
-            address: generateAddressFromXPub(Currency.BTC, testnet, wallet.xpub, sender.index),
-            privateKey: await generatePrivateKeyFromMnemonic(Currency.BTC, testnet, wallet.xpub, sender.index)
+            address: await generateAddressFromXPub(Currency.BTC, testnet, wallet.xpub, sender.index),
+            privateKey: await generatePrivateKeyFromMnemonic(Currency.BTC, testnet, sender.mnemonic, sender.index)
         } as FromAddress];
         var to = [{
             address: receiver.address,

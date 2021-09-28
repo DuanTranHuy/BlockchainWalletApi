@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Decimal } from 'decimal.js';
-import { AdaAccount, adaBroadcast, adaGetAccountsByAddress, adaGetTransactionsByAccount, Currency, FromAddress, generateAdaWallet, generateAddressFromXPub, generatePrivateKeyFromMnemonic, sendAdaTransaction, To } from '@tatumio/tatum';
+import { AdaAccount, adaBroadcast, adaGetAccountsByAddress, adaGetTransactionsByAccount, Currency, FromAddress, generateAdaWallet, generateAddressFromXPub, generatePrivateKeyFromMnemonic, prepareAdaTransaction, sendAdaTransaction, To } from '@tatumio/tatum';
 import { TxDto } from '../dto/tx.dto';
 
 @Injectable()
 export class AdaService {
     async getAddress(mnemonic: string, index: number, testnet: boolean = true) {
+        console.log(mnemonic);
         const wallet = await generateAdaWallet(mnemonic);
         const address = generateAddressFromXPub(Currency.ADA, testnet, wallet.xpub, Number(index));
         return address;
@@ -26,8 +27,8 @@ export class AdaService {
         const { sender, receiver } = transaction
         const wallet = await generateAdaWallet(sender.mnemonic);
         var fromAddress = [{
-            address: generateAddressFromXPub(Currency.ADA, testnet, wallet.xpub, Number(sender.index)),
-            privateKey: await generatePrivateKeyFromMnemonic(Currency.ADA, testnet, wallet.xpub, Number(sender.index))
+            address: await generateAddressFromXPub(Currency.ADA, testnet, wallet.xpub, Number(sender.index)),
+            privateKey: await generatePrivateKeyFromMnemonic(Currency.ADA, testnet, sender.mnemonic, Number(sender.index))
         } as FromAddress];
         var to = [{
             address: receiver.address,

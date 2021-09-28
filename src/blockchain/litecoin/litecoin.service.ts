@@ -38,13 +38,18 @@ export class LitecoinService {
         const { sender, receiver } = transaction
         const wallet = await generateLtcWallet(testnet, sender.mnemonic);
         var fromAddress = [{
-            address: generateAddressFromXPub(Currency.LTC, testnet, wallet.xpub, sender.index),
-            privateKey: await generatePrivateKeyFromMnemonic(Currency.LTC, testnet, wallet.xpub, sender.index)
+            address: await generateAddressFromXPub(Currency.LTC, testnet, wallet.xpub, sender.index),
+            privateKey: await generatePrivateKeyFromMnemonic(Currency.LTC, testnet, sender.mnemonic, sender.index)
         } as FromAddress];
+        const fromAddressBalance = await this.getBalance(fromAddress[0].address)
+        const changeBalance = (new Decimal(fromAddressBalance)).minus(new Decimal(receiver.value)).minus(new Decimal(0.001)).toNumber()
         var to = [{
             address: receiver.address,
             value: receiver.value
-        } as To]
+        }, {
+            address: fromAddress[0].address,
+            value: changeBalance
+        }] as To[]
         const transactionHash = await sendLitecoinTransaction(testnet, {
             fromAddress,
             to
