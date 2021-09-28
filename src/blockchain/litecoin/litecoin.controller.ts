@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TxDto } from '../dto/tx.dto';
 import { LitecoinService } from './litecoin.service';
@@ -6,16 +6,11 @@ import { LitecoinService } from './litecoin.service';
 @Controller('litecoin')
 @ApiTags('Litecoin')
 export class LitecoinController {
-  logger: Logger;
   constructor(private readonly litecoinService: LitecoinService,
-  ) {
-    this.logger = new Logger(LitecoinController.name)
-  }
+  ) { }
 
   @Get('/:testnet/address/:mnemonic/:index')
   async getAddress(@Param('mnemonic') mnemonic: string, @Param('index') index: number, @Param('testnet') testnet: boolean): Promise<string> {
-    this.logger.log(12312312312)
-    return '123';
     return await this.litecoinService.getAddress(mnemonic, index, testnet);
   }
 
