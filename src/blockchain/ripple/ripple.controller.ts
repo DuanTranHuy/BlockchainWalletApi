@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { TransferXrp } from '@tatumio/tatum';
+import { TxDto } from '../dto/tx.dto';
 import { RippleService } from './ripple.service';
 
 @Controller('ripple')
@@ -17,9 +17,9 @@ export class RippleController {
     return await this.rippleService.getBalance(address, testnet);
   }
 
-  @Get('/:testnet/:address/transactions')
-  async getTransactionsByAddress(@Param('address') address: string, @Param('testnet') testnet: boolean): Promise<any> {
-    return await this.rippleService.getTransactionsByAddress(address, testnet);
+  @Get('/:testnet/:address/transactions/:min')
+  async getTransactionsByAddress(@Param('address') address: string, @Param('min') min: number, @Param('testnet') testnet: boolean): Promise<any> {
+    return await this.rippleService.getTransactionsByAddress(address, min, testnet);
   }
 
   @Post('/:testnet/broadcast/:signedTx')
@@ -28,7 +28,7 @@ export class RippleController {
   }
 
   @Post('/:testnet/transaction')
-  async send(@Body() transaction: TransferXrp, @Param('testnet') testnet: boolean): Promise<any> {
+  async send(@Body() transaction: TxDto, @Param('testnet') testnet: boolean): Promise<any> {
     return await this.rippleService.sendCoin(transaction, testnet);
   }
 }
