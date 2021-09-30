@@ -17,7 +17,7 @@ export class AdaService {
 
     async getBalance(address: string, testnet: boolean = true): Promise<string> {
         let balance = await adaGetAccountsByAddress(address) as any;
-        const account = balance.summary as AdaAccount;
+        const account = balance as AdaAccount;
         const adaAsset = account.summary.assetBalances.find(x => x.asset.assetId === 'ada');
         return adaAsset ? (new Decimal(adaAsset.quantity)).div(Decimal.pow(10, 6)).toString() : '0'
     }
