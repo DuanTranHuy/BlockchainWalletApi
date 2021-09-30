@@ -6,7 +6,6 @@ import { TxDto } from '../dto/tx.dto';
 @Injectable()
 export class AdaService {
     async getAddress(mnemonic: string, index: number, testnet: boolean = true) {
-        console.log(mnemonic);
         const wallet = await generateAdaWallet(mnemonic);
         const address = generateAddressFromXPub(Currency.ADA, testnet, wallet.xpub, Number(index));
         return address;
@@ -19,7 +18,7 @@ export class AdaService {
     async getBalance(address: string, testnet: boolean = true): Promise<string> {
         let balance = await adaGetAccountsByAddress(address) as any;
         const account = balance.summary as AdaAccount;
-        const adaAsset = account.assetBalances.find(x => x.asset.assetId === 'ada');
+        const adaAsset = account.summary.assetBalances.find(x => x.asset.assetId === 'ada');
         return adaAsset ? (new Decimal(adaAsset.quantity)).div(Decimal.pow(10, 6)).toString() : '0'
     }
 

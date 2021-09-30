@@ -9,27 +9,27 @@ export class AdaController {
   constructor(private readonly adaService: AdaService) {}
 
   @Get('/:testnet/address/:mnemonic/:index')
-  async getAddress(@Param('mnemonic') mnemonic: string, @Param('index') index: number, @Param('testnet') testnet: boolean): Promise<string> {
-    return await this.adaService.getAddress(mnemonic, index, testnet);
+  async getAddress(@Param('mnemonic') mnemonic: string, @Param('index') index: number, @Param('testnet') testnet: string): Promise<string> {
+    return await this.adaService.getAddress(mnemonic, index, testnet === 'true');
   }
 
   @Get('/:testnet/:address/balance')
-  async getBalance(@Param('address') address: string, @Param('testnet') testnet: boolean): Promise<string> {
-    return await this.adaService.getBalance(address, testnet);
+  async getBalance(@Param('address') address: string, @Param('testnet') testnet: string): Promise<string> {
+    return await this.adaService.getBalance(address, testnet === 'true');
   }
 
   @Get('/:testnet/:address/transactions')
-  async getTransactionsByAddress(@Param('address') address: string, @Param('testnet') testnet: boolean): Promise<any> {
-    return await this.adaService.getTransactionsByAddress(address, testnet);
+  async getTransactionsByAddress(@Param('address') address: string, @Param('testnet') testnet: string): Promise<any> {
+    return await this.adaService.getTransactionsByAddress(address, testnet === 'true');
   }
 
   @Post('/:testnet/broadcast/:signedTx')
-  async boradcast(@Param('signedTx') signedTx: string, @Param('testnet') testnet: boolean): Promise<string> {
-    return await this.adaService.broadcast(signedTx, testnet);
+  async boradcast(@Param('signedTx') signedTx: string, @Param('testnet') testnet: string): Promise<string> {
+    return await this.adaService.broadcast(signedTx, testnet === 'true');
   }
 
   @Post('/:testnet/transaction')
-  async Send(@Body() transaction: TxDto, @Param('testnet') testnet: boolean): Promise<string> {
-    return await this.adaService.sendCoin(transaction, testnet);
+  async Send(@Body() transaction: TxDto, @Param('testnet') testnet: string): Promise<string> {
+    return await this.adaService.sendCoin(transaction, testnet === 'true');
   }
 }

@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Decimal } from 'decimal.js';
-import { TransferXrp, xrpBroadcast, xrpGetAccountBalance, xrpGetAccountInfo } from '@tatumio/tatum';
+import { TransferXrp, xrpBroadcast, xrpGetAccountBalance, xrpGetAccountInfo, xrpGetAccountTransactions } from '@tatumio/tatum';
 import { mnemonicToSeed } from "bip39";
 import * as bip32 from "ripple-bip32";
 import { TxDto } from '../dto/tx.dto';
 import sign from 'ripple-sign-keypairs';
-import { get } from "@tatumio/tatum/dist/src/connector/tatum";
 
 @Injectable()
 export class RippleService {
@@ -25,7 +24,7 @@ export class RippleService {
     }
 
     async getTransactionsByAddress(address: string, min: number, testnet: boolean = true): Promise<any> {
-        return await get(`/v3/xrp/account/tx/${address}?min=${min}`)
+        return await xrpGetAccountTransactions(`/v3/xrp/account/tx/${address}?min=${min}`)
     }
 
     async getBalance(address: string, testnet: boolean = true): Promise<string> {
