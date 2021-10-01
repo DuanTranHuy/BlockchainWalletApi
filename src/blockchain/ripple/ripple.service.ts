@@ -24,7 +24,7 @@ export class RippleService {
     }
 
     async getTransactionsByAddress(address: string, min: number, testnet: boolean = true): Promise<any> {
-        return await xrpGetAccountTransactions(`/v3/xrp/account/tx/${address}?min=${min}`)
+        return await xrpGetAccountTransactions(address, min)
     }
 
     async getBalance(address: string, testnet: boolean = true): Promise<string> {
